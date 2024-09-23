@@ -1,0 +1,62 @@
+﻿#ifndef NETSERVER_H
+#define NETSERVER_H
+
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTextBrowser>
+#include <QLabel>
+#include <QTcpSocket>
+#include <QUdpSocket>
+#include <QTcpServer>
+#include <QHostAddress>
+
+class MainWindow;
+
+class NetServer : public QWidget
+{
+public:
+    NetServer(QWidget *parent = nullptr);
+
+    QString getTcpRecvPort() {return m_TcpRecvEdit->text();}
+    QString getUdpRecvPort() {return m_UdpRecvEdit->text();}
+    void setTcpRecvPort(QString port);
+    void setUdpRecvPort(QString port);
+    void setTcpRecvBufferText(QString data);
+
+public slots:
+    void slot_TcpRecvConnBtn();
+    void slot_UdpRecvConnBtn();
+    void slot_NewConnect();
+    void slot_RecvTcpData();
+    void slot_RecvUdpData();
+
+private:
+    void uiBuild();
+
+private:
+    MainWindow* m_myParent;
+
+    //套接字
+    QTcpServer* m_TcpServer;
+    QTcpSocket* m_TcpSocket;
+    QUdpSocket* m_UdpSocket;
+
+    //接收端口
+    QLineEdit* m_TcpRecvEdit;
+    QLineEdit* m_UdpRecvEdit;
+
+    //连接按钮
+    QPushButton* m_TcpRecvConnBtn;
+    QPushButton* m_UdpRecvConnBtn;
+
+    //清除按钮
+    QPushButton* m_TcpClearBufferBtn;
+    QPushButton* m_UdpClearBufferBtn;
+
+    //接收缓冲区
+    QTextBrowser* m_TcpRecvBuffer;
+    QTextBrowser* m_UdpRecvBuffer;
+};
+
+#endif // NETSERVER_H
