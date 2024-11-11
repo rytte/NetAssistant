@@ -1,4 +1,4 @@
-﻿#include "AgentTest.h"
+#include "AgentTest.h"
 #pragma execution_character_set("utf-8")
 #include <QJsonObject>
 #include <QLabel>
@@ -41,7 +41,7 @@ void AgentTest::slot_BuildBtnSZ()
     QString strCommand = m_commandBox->currentText();
 
     //数据设置
-    if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand)
+    if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand || "DEFAULT_PROMPT_TEXT" == strCommand)
     {
 
         //文本滚动速度设置
@@ -133,7 +133,7 @@ void AgentTest::slot_BuildBtnFZ()
 
 
     //数据设置
-    if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand)
+    if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand || "DEFAULT_PROMPT_TEXT" == strCommand)
     {
         //文本滚动速度设置
         int iScrollInterval = -1;
@@ -269,7 +269,7 @@ void AgentTest::slot_CommandBoxChanged()
 {
     QString strCommand = m_commandBox->currentText();
 
-    if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand)
+    if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand || "DEFAULT_PROMPT_TEXT" == strCommand)
     {
         ui_label[12]->hide();
         m_widgetVec[12]->hide();
@@ -329,10 +329,14 @@ void AgentTest::uiBuild()
 {
     //命令项
     m_commandBox = new QComboBox(this);
+    m_commandBox->addItem("DEFAULT_PROMPT_TEXT");
     m_commandBox->addItem("PLAY_PROMPT_TEXT");
     m_commandBox->addItem("PLAY_EXCLUSIVE_TEXT");
     m_commandBox->addItem("READ_ARRANGEMENT");
     m_commandBox->addItem("RECOVER_TO_PLAN_MODE");
+    m_commandBox->addItem("RECOVER_EXCLUSIVE_TEXT");
+    m_commandBox->addItem("RECOVER_PROMPT_TEXT");
+    m_commandBox->addItem("RECOVER_EMERGENCY_TEXT");
     m_commandBox->addItem("SET_VOLUME");
     m_commandBox->addItem("PROCESS_EXIT");
     connect(m_commandBox, &QComboBox::currentTextChanged, this, &AgentTest::slot_CommandBoxChanged);
@@ -344,23 +348,23 @@ void AgentTest::uiBuild()
 
     //背景颜色
     m_backgroundColorBox = new QComboBox(this);
-    m_backgroundColorBox->addItem("black");
     m_backgroundColorBox->addItem("white");
+    m_backgroundColorBox->addItem("black");
     m_backgroundColorBox->addItem("red");
     m_backgroundColorBox->addItem("blue");
 
     //文本颜色
     m_textColorBox = new QComboBox(this);
-    m_textColorBox->addItem("white");
     m_textColorBox->addItem("black");
+    m_textColorBox->addItem("white");
     m_textColorBox->addItem("red");
     m_textColorBox->addItem("blue");
 
     //滚动方向
     m_textDirectionBox = new QComboBox(this);
-    m_textDirectionBox->addItem("to_up");
     m_textDirectionBox->addItem("to_left");
     m_textDirectionBox->addItem("to_right");
+    m_textDirectionBox->addItem("to_up");
     m_textDirectionBox->addItem("static");
 
     //滚动速度
