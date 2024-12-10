@@ -1,4 +1,4 @@
-#include "AgentTest.h"
+﻿#include "AgentTest.h"
 #pragma execution_character_set("utf-8")
 #include <QJsonObject>
 #include <QLabel>
@@ -345,6 +345,8 @@ void AgentTest::uiBuild()
     m_textBox = new QComboBox(this);
     m_textBox->addItem("各位乘客请注意，由于深圳突降暴雨，地面湿滑，请各位乘客有序排队进站乘车，切勿拥挤，谢谢配合！");
     m_textBox->addItem("Dear passengers, please note that due to the sudden rainstorm in Shenzhen, the ground is wet and slippery. Please line up in order to get on the bus. Do not crowd. Thank you for your cooperation!");
+    m_textBox->addItem("秋天是丰收的季节，田野里金黄一片，稻谷弯下了腰，沉甸甸的果实挂满了枝头。");
+    m_textBox->addItem("冬天悄然而至，寒冷的空气让人不禁打了个寒颤。大地被白雪覆盖，世界仿佛变成了一个银色的童话。空气清冷，呼出的气息在空中凝结成白雾。树木光秃，枝条上偶尔积雪，形成了美丽的冰雕。夜晚，家家户户的窗户透出温暖的灯光，炉火旁，人们围坐在一起，享受着温暖和亲情。");
 
     //背景颜色
     m_backgroundColorBox = new QComboBox(this);

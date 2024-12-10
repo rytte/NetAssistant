@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #pragma execution_character_set("utf-8")
 
 QFont font_s("Microsoft YaHei");
