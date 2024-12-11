@@ -6,7 +6,7 @@
 NetServer::NetServer(QWidget *parent)
     : QWidget(parent)
 {
-    setGeometry(0, 15, 450, 650);
+    setGeometry(0, 15, 340, 495);
     m_myParent = (MainWindow* )topLevelWidget();
 
     //创建UI界面
@@ -107,55 +107,68 @@ void NetServer::slot_RecvUdpData()
     QHostAddress addr;
     quint16 port;
     m_UdpSocket->readDatagram(data.data(),data.size(),&addr,&port);
-    QString str = QString("————————" + addr.toString() + " : " + QString::number(port) + "————————\n");
+    QString str = QString("—————— From " + addr.toString() + " : " + QString::number(port) + " ——————\n");
     m_UdpRecvBuffer->append(str + data);
 }
 
 void NetServer::uiBuild()
 {
     //TCP接收端口
-    QLabel* ui_TcpRecvPort = new QLabel(this);
-    ui_TcpRecvPort->setGeometry(0, 5, 0, 0);
-    ui_TcpRecvPort->setText("TCP接收端口");
+    QLabel* ui_TcpRecvPort = new QLabel("TCP接收端口", this);
     ui_TcpRecvPort->setFont(font_l);
     ui_TcpRecvPort->adjustSize();
 
     m_TcpRecvEdit = new QLineEdit(this);
-    m_TcpRecvEdit->setGeometry(140, 0, 180, 35);
     m_TcpRecvEdit->setFont(font_l);
 
-    m_TcpRecvConnBtn = new QPushButton(this);
-    m_TcpRecvConnBtn->setGeometry(350, 0, 100, 35);
-    m_TcpRecvConnBtn->setText("连接");
+    m_TcpRecvConnBtn = new QPushButton("连接", this);
     m_TcpRecvConnBtn->setFont(font_s);
     connect(m_TcpRecvConnBtn, &QPushButton::clicked, this, &NetServer::slot_TcpRecvConnBtn);
 
     //TCP接收缓冲区
     m_TcpRecvBuffer = new QTextBrowser(this);
-    m_TcpRecvBuffer->setGeometry(0, 50, 450, 265);
+    m_TcpRecvBuffer->setFixedSize(340, 195);
     m_TcpRecvBuffer->setFont(font_s);
     m_TcpRecvBuffer->document()->setMaximumBlockCount(1000);
 
     //UDP接收端口
-    QLabel* ui_UdpRecvPort = new QLabel(this);
-    ui_UdpRecvPort->setGeometry(0, 340, 0, 0);
-    ui_UdpRecvPort->setText("UDP接收端口");
+    QLabel* ui_UdpRecvPort = new QLabel("UDP接收端口", this);
     ui_UdpRecvPort->setFont(font_l);
     ui_UdpRecvPort->adjustSize();
 
     m_UdpRecvEdit = new QLineEdit(this);
-    m_UdpRecvEdit->setGeometry(140, 335, 180, 35);
     m_UdpRecvEdit->setFont(font_l);
 
-    m_UdpRecvConnBtn = new QPushButton(this);
-    m_UdpRecvConnBtn->setGeometry(350, 335, 100, 35);
-    m_UdpRecvConnBtn->setText("连接");
+    m_UdpRecvConnBtn = new QPushButton("连接", this);
     m_UdpRecvConnBtn->setFont(font_s);
     connect(m_UdpRecvConnBtn, &QPushButton::clicked, this, &NetServer::slot_UdpRecvConnBtn);
 
     //UDP接收缓冲区
     m_UdpRecvBuffer = new QTextBrowser(this);
-    m_UdpRecvBuffer->setGeometry(0, 380, 450, 265);
+    m_UdpRecvBuffer->setFixedSize(340, 195);
     m_UdpRecvBuffer->setFont(font_s);
     m_UdpRecvBuffer->document()->setMaximumBlockCount(1000);
+
+
+    //布局管理器
+    QHBoxLayout* hBox1 = new QHBoxLayout;
+    hBox1->addWidget(ui_TcpRecvPort);
+    hBox1->addWidget(m_TcpRecvEdit);
+    hBox1->addWidget(m_TcpRecvConnBtn);
+    hBox1->setSpacing(20);
+
+    QHBoxLayout* hBox2 = new QHBoxLayout;
+    hBox2->addWidget(ui_UdpRecvPort);
+    hBox2->addWidget(m_UdpRecvEdit);
+    hBox2->addWidget(m_UdpRecvConnBtn);
+    hBox2->setSpacing(20);
+
+    QVBoxLayout* vBox = new QVBoxLayout;
+    vBox->addLayout(hBox1);
+    vBox->addWidget(m_TcpRecvBuffer);
+    vBox->addSpacing(10);
+    vBox->addLayout(hBox2);
+    vBox->addWidget(m_UdpRecvBuffer);
+
+    this->setLayout(vBox);
 }

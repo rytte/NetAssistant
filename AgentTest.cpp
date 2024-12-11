@@ -14,7 +14,7 @@
 AgentTest::AgentTest(QWidget *parent)
     : QWidget(parent)
 {
-    setGeometry(0, 15, 450, 650);
+    setGeometry(0, 15, 340, 495);
     m_myParent = (MainWindow* )topLevelWidget();
 
     //创建UI界面
@@ -337,6 +337,7 @@ void AgentTest::uiBuild()
     m_commandBox->addItem("RECOVER_EXCLUSIVE_TEXT");
     m_commandBox->addItem("RECOVER_PROMPT_TEXT");
     m_commandBox->addItem("RECOVER_EMERGENCY_TEXT");
+    m_commandBox->addItem("GET_TEXT_PLAYING");
     m_commandBox->addItem("SET_VOLUME");
     m_commandBox->addItem("PROCESS_EXIT");
     connect(m_commandBox, &QComboBox::currentTextChanged, this, &AgentTest::slot_CommandBoxChanged);
@@ -412,27 +413,23 @@ void AgentTest::uiBuild()
     m_msgPriorityBox->setValue(6);
 
     //生成按钮SZ
-    m_buildBtnSZ = new QPushButton(this);
-    m_buildBtnSZ->setText("生成深圳JSON");
-    m_buildBtnSZ->setFont(font_m);
+    m_buildBtnSZ = new QPushButton("生成深圳JSON", this);
+    m_buildBtnSZ->setFont(font_s);
     connect(m_buildBtnSZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnSZ);
 
     //生成按钮FZ
-    m_buildBtnFZ = new QPushButton(this);
-    m_buildBtnFZ->setText("生成福州JSON");
-    m_buildBtnFZ->setFont(font_m);
+    m_buildBtnFZ = new QPushButton("生成福州JSON", this);
+    m_buildBtnFZ->setFont(font_s);
     connect(m_buildBtnFZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnFZ);
 
     //深圳Json转换按钮
-    m_jsonConvertSZ = new QPushButton(this);
-    m_jsonConvertSZ->setText("转换");
+    m_jsonConvertSZ = new QPushButton("转换", this);
     m_jsonConvertSZ->setFont(font_s);
     m_jsonConvertSZ->setMaximumSize(70, 40);
     connect(m_jsonConvertSZ, &QPushButton::clicked, this, &AgentTest::slot_ConvertJsonBtnSZ);
 
     //UDP发送按钮
-    m_udpSendBtn = new QPushButton(this);
-    m_udpSendBtn->setText("UDP发送");
+    m_udpSendBtn = new QPushButton("UDP发送", this);
     m_udpSendBtn->setFont(font_s);
     m_udpSendBtn->setMaximumSize(70, 40);
     connect(m_udpSendBtn, &QPushButton::clicked, m_myParent, &MainWindow::slot_UdpSendBtn);
@@ -463,10 +460,12 @@ void AgentTest::uiBuild()
         ui_label[i] = new QLabel(this);
         ui_label[i]->setAlignment(Qt::AlignCenter);
         ui_label[i]->setText(ui_labelText[i]);
+        ui_label[i]->setFont(font_s);
 
         //布局设置
-        ui_label[i]->setFixedSize(80, 30);
-        m_widgetVec[i]->setFixedSize(300, 30);
+        ui_label[i]->setFixedSize(60, 22);
+        m_widgetVec[i]->setFixedSize(225, 22);
+        m_widgetVec[i]->setFont(font_s);
     }
 
 
@@ -475,17 +474,17 @@ void AgentTest::uiBuild()
     {
         m_hBox[i] = new QHBoxLayout;
         m_hBox[i]->addWidget(ui_label[i]);
-        m_hBox[i]->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        m_hBox[i]->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));
         m_hBox[i]->addWidget(m_widgetVec[i]);
     }
 
     m_hBox[13] = new QHBoxLayout;
     m_hBox[13]->addWidget(m_jsonConvertSZ);
-    m_hBox[13]->addSpacing(10);
+    m_hBox[13]->addSpacing(8);
     m_hBox[13]->addWidget(m_buildBtnSZ);
-    m_hBox[13]->addSpacing(10);
+    m_hBox[13]->addSpacing(8);
     m_hBox[13]->addWidget(m_buildBtnFZ);
-    m_hBox[13]->addSpacing(10);
+    m_hBox[13]->addSpacing(8);
     m_hBox[13]->addWidget(m_udpSendBtn);
 
     //垂直布局
@@ -493,7 +492,7 @@ void AgentTest::uiBuild()
     for(int i = 0; i < 14; i++)
     {
         m_vBox->addLayout(m_hBox[i]);
-        m_vBox->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        m_vBox->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));
     }
     setLayout(m_vBox);
 }

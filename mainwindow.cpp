@@ -8,15 +8,15 @@ QFont font_l("Microsoft YaHei");
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    resize(1120, 770);
+    resize(840, 580);
     setWindowIcon(QIcon(":/cover.ico"));
     setAcceptDrops(true);       // 允许拖放文件
     m_isDragging = false;
 
     //字号设置
-    font_s.setPixelSize(15);
-    font_m.setPixelSize(17);
-    font_l.setPixelSize(20);
+    font_s.setPixelSize(11);
+    font_m.setPixelSize(12);
+    font_l.setPixelSize(14);
 
     //创建UI界面
     uiBuild();
@@ -136,31 +136,7 @@ void MainWindow::slot_TcpSendConnBtn()
         m_TcpSocket->disconnectFromHost();
         m_TcpSendBtn->setEnabled(false);
         m_TcpSendPortEdit->setEnabled(true);
-        if(m_UdpSendPortEdit->isEnabled())
-            m_IPEdit->setEnabled(true);
-    }
-}
-
-void MainWindow::slot_UdpSendConnBtn()
-{
-    static bool Connected = false;
-    Connected = !Connected;
-    if(Connected)
-    {
-        m_address.setAddress(m_IPEdit->text());
-        m_UdpSendConnBtn->setText("已连接");
-        m_UdpSendBtn->setEnabled(true);
-        m_UdpSendPortEdit->setEnabled(false);
-        m_IPEdit->setEnabled(false);
-    }
-    else
-    {
-        slot_StopKeepBtn();
-        m_UdpSendConnBtn->setText("连接");
-        m_UdpSendBtn->setEnabled(false);
-        m_UdpSendPortEdit->setEnabled(true);
-        if(m_TcpSendPortEdit->isEnabled())
-            m_IPEdit->setEnabled(true);
+        m_IPEdit->setEnabled(true);
     }
 }
 
@@ -188,6 +164,7 @@ void MainWindow::slot_UdpSendBtn()
         m_stopKeepBtn->setEnabled(true);
     }
 
+    m_address.setAddress(m_IPEdit->text());
     m_UdpSocket->writeDatagram(m_SendTextBuffer->toPlainText().toUtf8(), m_address, m_UdpSendPortEdit->text().toInt());
     updateInitFile();
 }
@@ -269,69 +246,49 @@ void MainWindow::dropEvent(QDropEvent *event)
 void MainWindow::uiBuild()
 {
     //目的IP
-    QLabel* ui_IP = new QLabel(this);
-    ui_IP->setGeometry(30, 25, 0, 0);
-    ui_IP->setText("IP地址");
+    QLabel* ui_IP = new QLabel("IP地址", this);
     ui_IP->setFont(font_l);
-    ui_IP->adjustSize();
 
     m_IPEdit = new QLineEdit(this);
-    m_IPEdit->setGeometry(130, 20, 210, 35);
+    m_IPEdit->setFixedSize(150, 25);
     m_IPEdit->setFont(font_l);
 
-    m_PingBtn = new QPushButton(this);
-    m_PingBtn->setGeometry(370, 20, 100, 35);
-    m_PingBtn->setText("Ping");
+    m_PingBtn = new QPushButton("Ping", this);
+    m_PingBtn->setFixedSize(75, 25);
     m_PingBtn->setFont(font_s);
     connect(m_PingBtn, &QPushButton::clicked, this, &MainWindow::slot_PingBtn);
 
     //TCP端口号
-    QLabel* ui_TcpSendPort = new QLabel(this);
-    ui_TcpSendPort->setGeometry(30, 75, 0, 0);
-    ui_TcpSendPort->setText("TCP端口");
+    QLabel* ui_TcpSendPort = new QLabel("TCP端口", this);
     ui_TcpSendPort->setFont(font_l);
-    ui_TcpSendPort->adjustSize();
 
     m_TcpSendPortEdit = new QLineEdit(this);
-    m_TcpSendPortEdit->setGeometry(130, 70, 210, 35);
+    m_TcpSendPortEdit->setFixedSize(150, 25);
     m_TcpSendPortEdit->setFont(font_l);
 
-    m_TcpSendConnBtn = new QPushButton(this);
-    m_TcpSendConnBtn->setGeometry(370, 70, 100, 35);
-    m_TcpSendConnBtn->setText("连接");
+    m_TcpSendConnBtn = new QPushButton("连接", this);
+    m_TcpSendConnBtn->setFixedSize(75, 25);
     m_TcpSendConnBtn->setFont(font_s);
     connect(m_TcpSendConnBtn, &QPushButton::clicked, this, &MainWindow::slot_TcpSendConnBtn);
 
     //UDP端口号
-    QLabel* ui_UdpSendPort = new QLabel(this);
-    ui_UdpSendPort->setGeometry(30, 125, 0, 0);
-    ui_UdpSendPort->setText("UDP端口");
+    QLabel* ui_UdpSendPort = new QLabel("UDP端口", this);
     ui_UdpSendPort->setFont(font_l);
-    ui_UdpSendPort->adjustSize();
 
     m_UdpSendPortEdit = new QLineEdit(this);
-    m_UdpSendPortEdit->setGeometry(130, 120, 210, 35);
+    m_UdpSendPortEdit->setFixedSize(150, 25);
     m_UdpSendPortEdit->setFont(font_l);
 
-    m_UdpSendConnBtn = new QPushButton(this);
-    m_UdpSendConnBtn->setGeometry(370, 120, 100, 35);
-    m_UdpSendConnBtn->setText("连接");
-    m_UdpSendConnBtn->setFont(font_s);
-    connect(m_UdpSendConnBtn, &QPushButton::clicked, this, &MainWindow::slot_UdpSendConnBtn);
-
     //持续发送
-    m_KeepSendBox = new QCheckBox(this);
-    m_KeepSendBox->setGeometry(30, 180, 100, 35);
-    m_KeepSendBox->setText("持续发送");
+    m_KeepSendBox = new QCheckBox("持续发送", this);
+    m_KeepSendBox->setFixedSize(75, 22);
     m_KeepSendBox->setFont(font_s);
 
     m_SendIntervalEdit = new QLineEdit(this);
-    m_SendIntervalEdit->setGeometry(30, 220, 60, 30);
+    m_SendIntervalEdit->setFixedSize(40, 22);
     m_SendIntervalEdit->setFont(font_s);
 
-    QLabel* ui_ms = new QLabel(this);
-    ui_ms->setGeometry(95, 225, 0, 0);
-    ui_ms->setText("ms");
+    QLabel* ui_ms = new QLabel("ms", this);
     ui_ms->setFont(font_s);
     ui_ms->adjustSize();
 
@@ -340,55 +297,47 @@ void MainWindow::uiBuild()
     m_UdpTimer = new QTimer(this);
     connect(m_UdpTimer, &QTimer::timeout, this, &MainWindow::slot_UdpTimerSendMessage);
 
-    m_stopKeepBtn = new QPushButton(this);
-    m_stopKeepBtn->setGeometry(140, 220, 210, 30);
-    m_stopKeepBtn->setText("停止发送");
+    m_stopKeepBtn = new QPushButton("停止发送", this);
+    m_stopKeepBtn->setFixedSize(156, 22);
     m_stopKeepBtn->setFont(font_s);
     m_stopKeepBtn->setEnabled(false);
     connect(m_stopKeepBtn, &QPushButton::clicked, this, &MainWindow::slot_StopKeepBtn);
 
     //发送
-    m_TcpSendBtn = new QPushButton(this);
-    m_TcpSendBtn->setGeometry(140, 180, 100, 35);
-    m_TcpSendBtn->setText("TCP发送 ");
+    m_TcpSendBtn = new QPushButton("TCP发送", this);
+    m_TcpSendBtn->setFixedSize(75, 22);
     m_TcpSendBtn->setFont(font_s);
     m_TcpSendBtn->setEnabled(false);
     connect(m_TcpSendBtn, &QPushButton::clicked, this, &MainWindow::slot_TcpSendBtn);
 
-    m_UdpSendBtn = new QPushButton(this);
-    m_UdpSendBtn->setGeometry(250, 180, 100, 35);
-    m_UdpSendBtn->setText("UDP发送 ");
+    m_UdpSendBtn = new QPushButton("UDP发送", this);
+    m_UdpSendBtn->setFixedSize(75, 22);
     m_UdpSendBtn->setFont(font_s);
-    m_UdpSendBtn->setEnabled(false);
     connect(m_UdpSendBtn, &QPushButton::clicked, this, &MainWindow::slot_UdpSendBtn);
 
     //清空发送缓冲区
-    m_ClearSendBtn = new QPushButton(this);
-    m_ClearSendBtn->setGeometry(370, 220, 100, 30);
-    m_ClearSendBtn->setText("清空");
+    m_ClearSendBtn = new QPushButton("清空", this);
+    m_ClearSendBtn->setFixedSize(75, 22);
     m_ClearSendBtn->setFont(font_s);
     connect(m_ClearSendBtn, &QPushButton::clicked, this, &MainWindow::slot_ClearSendBtn);
 
     //发送缓冲区
     m_SendTextBuffer = new QTextEdit(this);
-    m_SendTextBuffer->setGeometry(30, 265, 450, 455);
+    m_SendTextBuffer->setFixedSize(340, 340);
     m_SendTextBuffer->setFont(font_m);
 
     //选项栏
     m_tabWidget = new QTabWidget(this);
-    m_tabWidget->setGeometry(600, 20, 450, 700);
+    m_tabWidget->setFixedSize(340, 530);
     QWidget* server = new QWidget(this);
     QWidget* expand = new QWidget(this);
     QWidget* agent = new QWidget(this);
-    server->resize(150, 35);
-    expand->resize(150, 35);
-    agent->resize(150, 35);
     m_tabWidget->setFont(font_m);
     m_tabWidget->addTab(server, "接收区");
     m_tabWidget->addTab(expand, "扩展");
     m_tabWidget->addTab(agent, "测试");
     m_tabWidget->setObjectName("tabWidget");
-    m_tabWidget->setStyleSheet("QTabBar::tab { width: 150px; height: 35px;background-color:transparent;color:rgb(120,120,120);}"
+    m_tabWidget->setStyleSheet("QTabBar::tab { width: 110px; height: 25px;background-color:transparent;color:rgb(120,120,120);}"
                        "QTabBar::tab:selected{ color:rgb(75,75,110); border-bottom:2px solid#4b4b6e; }"
                        "QTabBar::tab:hover{ color:rgb(0,0,0); }"
                                "QTabWidget:pane{border:0px; background-color:transparent}");
@@ -397,5 +346,54 @@ void MainWindow::uiBuild()
     m_NetServer = new NetServer(server);
     m_Expand = new Expand(expand);
     m_AgentTest = new AgentTest(agent);
+
+
+    //布局管理器
+    QWidget* widget = new QWidget(this);
+    widget->setFixedSize(340, 530);
+    QGridLayout* gridLayout = new QGridLayout;
+    gridLayout->addWidget(ui_IP, 0, 0);
+    gridLayout->addWidget(m_IPEdit, 0, 1);
+    gridLayout->addWidget(m_PingBtn, 0, 2);
+    gridLayout->addWidget(ui_TcpSendPort, 1, 0);
+    gridLayout->addWidget(m_TcpSendPortEdit, 1, 1);
+    gridLayout->addWidget(m_TcpSendConnBtn, 1, 2);
+    gridLayout->addWidget(ui_UdpSendPort, 2, 0);
+    gridLayout->addWidget(m_UdpSendPortEdit, 2, 1);
+    gridLayout->addWidget(new QWidget, 2, 2);
+    gridLayout->setHorizontalSpacing(20);
+    gridLayout->setVerticalSpacing(10);
+
+    QHBoxLayout* hBox1 = new QHBoxLayout;
+    hBox1->addWidget(m_KeepSendBox);
+    hBox1->addWidget(m_TcpSendBtn);
+    hBox1->addWidget(m_UdpSendBtn);
+    hBox1->addWidget(new QWidget);
+
+    QHBoxLayout* hBox2 = new QHBoxLayout;
+    hBox2->addWidget(m_SendIntervalEdit);
+    hBox2->addWidget(ui_ms);
+    hBox2->addWidget(m_stopKeepBtn);
+    hBox2->addSpacing(10);
+    hBox2->addWidget(m_ClearSendBtn);
+
+    QVBoxLayout* vBox = new QVBoxLayout;
+    vBox->addLayout(gridLayout);
+    vBox->addSpacing(15);
+    vBox->addLayout(hBox1);
+    vBox->addLayout(hBox2);
+    vBox->addSpacing(10);
+    vBox->addWidget(m_SendTextBuffer);
+
+    widget->setLayout(vBox);
+
+    QHBoxLayout* hBox3 = new QHBoxLayout;
+    hBox3->addWidget(widget);
+    hBox3->addSpacing(60);
+    hBox3->addWidget(m_tabWidget);
+
+    //设置布局
+    this->setCentralWidget(new QWidget);
+    this->centralWidget()->setLayout(hBox3);
 }
 

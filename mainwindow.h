@@ -52,7 +52,6 @@ public slots:
     void slot_PingBtn();
     void slot_ReadPingOutput();
     void slot_TcpSendConnBtn();
-    void slot_UdpSendConnBtn();
     void slot_TcpSendBtn();
     void slot_UdpSendBtn();
     void slot_ClearSendBtn();
@@ -79,7 +78,6 @@ private:
     //连接按钮
     QPushButton* m_PingBtn;
     QPushButton* m_TcpSendConnBtn;
-    QPushButton* m_UdpSendConnBtn;
 
     //连续发送
     QCheckBox* m_KeepSendBox;
