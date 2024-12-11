@@ -122,6 +122,7 @@ void NetServer::uiBuild()
     m_TcpRecvEdit->setFont(font_l);
 
     m_TcpRecvConnBtn = new QPushButton("连接", this);
+    m_TcpRecvConnBtn->setFixedSize(65, 22);
     m_TcpRecvConnBtn->setFont(font_s);
     connect(m_TcpRecvConnBtn, &QPushButton::clicked, this, &NetServer::slot_TcpRecvConnBtn);
 
@@ -140,6 +141,7 @@ void NetServer::uiBuild()
     m_UdpRecvEdit->setFont(font_l);
 
     m_UdpRecvConnBtn = new QPushButton("连接", this);
+    m_UdpRecvConnBtn->setFixedSize(65, 22);
     m_UdpRecvConnBtn->setFont(font_s);
     connect(m_UdpRecvConnBtn, &QPushButton::clicked, this, &NetServer::slot_UdpRecvConnBtn);
 
