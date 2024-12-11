@@ -2,9 +2,6 @@
 
 #include <QApplication>
 #include <QScreen>
-#include <Windows.h>
-#include <WinUser.h>
-#include <wingdi.h>
 #include <QDebug>
 
 int main(int argc, char *argv[])
