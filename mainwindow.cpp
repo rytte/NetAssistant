@@ -113,8 +113,17 @@ void MainWindow::slot_ReadPingOutput()
 void MainWindow::slot_TcpSendConnBtn()
 {
     static bool Connected = false;
-    Connected = !Connected;
     if(Connected)
+    {
+        slot_StopKeepBtn();
+        m_TcpSendConnBtn->setText("连接");
+        m_TcpSocket->disconnectFromHost();
+        m_TcpSendBtn->setEnabled(false);
+        m_TcpSendPortEdit->setEnabled(true);
+        m_IPEdit->setEnabled(true);
+        Connected = false;
+    }
+    else
     {
         m_TcpSocket->connectToHost(m_IPEdit->text(), m_TcpSendPortEdit->text().toInt());
         if(m_TcpSocket->waitForConnected(500))
@@ -123,20 +132,13 @@ void MainWindow::slot_TcpSendConnBtn()
             m_TcpSendBtn->setEnabled(true);
             m_TcpSendPortEdit->setEnabled(false);
             m_IPEdit->setEnabled(false);
+            Connected = true;
         }
         else
         {
             m_NetServer->setTcpRecvBufferText("连接失败。");
+            Connected = false;
         }
-    }
-    else
-    {
-        slot_StopKeepBtn();
-        m_TcpSendConnBtn->setText("连接");
-        m_TcpSocket->disconnectFromHost();
-        m_TcpSendBtn->setEnabled(false);
-        m_TcpSendPortEdit->setEnabled(true);
-        m_IPEdit->setEnabled(true);
     }
 }
 

@@ -155,9 +155,19 @@ void AgentTest::slot_BuildBtnFZ()
 
         //添加键值对
         messageBody.insert("msg_priority", m_msgPriorityBox->text().toInt());
-        messageBody.insert("text", m_textBox->currentText());
-        messageBody.insert("background_color", m_backgroundColorBox->currentText());
-        messageBody.insert("text_color", m_textColorBox->currentText());
+        messageBody.insert("text_cn", m_textBox->currentText());
+//        messageBody.insert("background_color", m_backgroundColorBox->currentText())
+        QString color = m_textColorBox->currentText();
+        QString rgb;
+        if(color == "white")
+            rgb = "#FFFFFF";
+        else if(color == "black")
+            rgb = "#000000";
+        else if(color == "red")
+            rgb = "#FF0000";
+        else if(color == "blue")
+            rgb = "#0000FF";
+        messageBody.insert("text_color", rgb);
         messageBody.insert("text_scrollInterval", iScrollInterval);
         messageBody.insert("text_fontSize", iTextFontSize);
         messageBody.insert("text_direction", m_textDirectionBox->currentText());
@@ -264,7 +274,7 @@ void AgentTest::slot_ConvertJsonBtnSZ()
     m_myParent->setSendBuffer(convertStr);
 }
 
-//控件隐藏与显示
+//选项隐藏与显示
 void AgentTest::slot_CommandBoxChanged()
 {
     QString strCommand = m_commandBox->currentText();
@@ -300,7 +310,7 @@ void AgentTest::slot_CommandBoxChanged()
 
 }
 
-//控件隐藏与显示
+//选项使能与失能
 void AgentTest::slot_LimitStyleBoxChanged()
 {
     QString strLimitStyle = m_limitStyleBox->currentText();
@@ -329,9 +339,9 @@ void AgentTest::uiBuild()
 {
     //命令项
     m_commandBox = new QComboBox(this);
-    m_commandBox->addItem("DEFAULT_PROMPT_TEXT");
     m_commandBox->addItem("PLAY_PROMPT_TEXT");
     m_commandBox->addItem("PLAY_EXCLUSIVE_TEXT");
+    m_commandBox->addItem("DEFAULT_PROMPT_TEXT");
     m_commandBox->addItem("READ_ARRANGEMENT");
     m_commandBox->addItem("RECOVER_TO_PLAN_MODE");
     m_commandBox->addItem("RECOVER_EXCLUSIVE_TEXT");
@@ -393,12 +403,12 @@ void AgentTest::uiBuild()
 
     //开始时间
     m_limitTimeStartBox = new QDateTimeEdit(this);
-    m_limitTimeStartBox->setDate(QDate(2024, 7, 1));
+    m_limitTimeStartBox->setDate(QDate(2024, 12, 1));
     m_limitTimeStartBox->setTime(QTime(8, 0));
 
     //结束时间
     m_limitTimeEndBox = new QDateTimeEdit(this);
-    m_limitTimeEndBox->setDate(QDate(2024, 7, 1));
+    m_limitTimeEndBox->setDate(QDate(2024, 12, 1));
     m_limitTimeEndBox->setTime(QTime(8, 0));
 
     //音量
