@@ -201,6 +201,10 @@ void AgentTest::slot_BuildBtnFZ()
     {
         messageBody.insert("volume", m_volumeBox->text());
     }
+    else if("CHANGE_LIVE" == strCommand)
+    {
+        messageBody.insert("live_address", "");
+    }
 
     int randomInt = QRandomGenerator::global()->bounded(900000000) + 100000000;
     messageBody.insert("text_id", QString::number(randomInt));
@@ -348,6 +352,10 @@ void AgentTest::uiBuild()
     m_commandBox->addItem("RECOVER_PROMPT_TEXT");
     m_commandBox->addItem("RECOVER_EMERGENCY_TEXT");
     m_commandBox->addItem("GET_TEXT_PLAYING");
+    m_commandBox->addItem("START_LIVING");
+    m_commandBox->addItem("STOP_LIVING");
+    m_commandBox->addItem("CHANGE_LIVE");
+    m_commandBox->addItem("UPDATE_CONFIG");
     m_commandBox->addItem("SET_VOLUME");
     m_commandBox->addItem("PROCESS_EXIT");
     connect(m_commandBox, &QComboBox::currentTextChanged, this, &AgentTest::slot_CommandBoxChanged);
