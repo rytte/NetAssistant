@@ -83,10 +83,10 @@ void AgentTest::slot_BuildBtnSZ()
         else if("timer" == strLimitType)
         {
             messageBody.insert("limit_style", "timer");
-            QString strStartTime = m_limitTimeStartBox->dateTime().toString("yyyy/MM/dd hh:mm:ss");
-            QString strEndTime = m_limitTimeEndBox->dateTime().toString("yyyy/MM/dd hh:mm:ss");
+            QString strStartTime = m_limitTimeStartEdit->dateTime().toString("yyyy/MM/dd hh:mm:ss");
+            QString strEndTime = m_limitTimeEndEdit->dateTime().toString("yyyy/MM/dd hh:mm:ss");
 
-            if(m_limitTimeEndBox->dateTime() > QDateTime::currentDateTime())
+            if(m_limitTimeEndEdit->dateTime() > QDateTime::currentDateTime())
                 messageBody.insert("limit_time", strStartTime+","+strEndTime);
             else
             {
@@ -185,10 +185,10 @@ void AgentTest::slot_BuildBtnFZ()
         else if("timer" == strLimitType)
         {
             messageBody.insert("limit_style", "timer");
-            QString strStartTime = m_limitTimeStartBox->dateTime().toString("yyyy-MM-dd hh:mm:ss");
-            QString strEndTime = m_limitTimeEndBox->dateTime().toString("yyyy-MM-dd hh:mm:ss");
+            QString strStartTime = m_limitTimeStartEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss");
+            QString strEndTime = m_limitTimeEndEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss");
 
-            if(m_limitTimeEndBox->dateTime() > QDateTime::currentDateTime())
+            if(m_limitTimeEndEdit->dateTime() > QDateTime::currentDateTime())
                 messageBody.insert("limit_time", strStartTime+","+strEndTime);
             else
             {
@@ -285,27 +285,55 @@ void AgentTest::slot_CommandBoxChanged()
 
     if("PLAY_EXCLUSIVE_TEXT" == strCommand || "PLAY_PROMPT_TEXT" == strCommand || "DEFAULT_PROMPT_TEXT" == strCommand)
     {
-        ui_label[12]->hide();
-        m_widgetVec[12]->hide();
-        for(int i = 0; i < 12; i++)
+        for(int i = 1; i < WIDGET_NUM; i++)
         {
-            ui_label[i]->show();
-            m_widgetVec[i]->show();
+            if(i == VOLUME || i == LIVE_ADDRESS)
+            {
+                ui_label[i]->hide();
+                m_widgetVec[i]->hide();
+            }
+            else
+            {
+                ui_label[i]->show();
+                m_widgetVec[i]->show();
+            }
         }
     }
     else if("SET_VOLUME" == strCommand)
     {
-        ui_label[12]->show();
-        m_widgetVec[12]->show();
-        for(int i = 1; i < 12; i++)
+        for(int i = 1; i < WIDGET_NUM; i++)
         {
-            ui_label[i]->hide();
-            m_widgetVec[i]->hide();
+            if(i == VOLUME)
+            {
+                ui_label[i]->show();
+                m_widgetVec[i]->show();
+            }
+            else
+            {
+                ui_label[i]->hide();
+                m_widgetVec[i]->hide();
+            }
+        }
+    }
+    else if("CHANGE_LIVE" == strCommand)
+    {
+        for(int i = 1; i < WIDGET_NUM; i++)
+        {
+            if(i == LIVE_ADDRESS)
+            {
+                ui_label[i]->show();
+                m_widgetVec[i]->show();
+            }
+            else
+            {
+                ui_label[i]->hide();
+                m_widgetVec[i]->hide();
+            }
         }
     }
     else
     {
-        for(int i = 1; i < 13; i++)
+        for(int i = 1; i < WIDGET_NUM; i++)
         {
             ui_label[i]->hide();
             m_widgetVec[i]->hide();
@@ -322,20 +350,20 @@ void AgentTest::slot_LimitStyleBoxChanged()
     if("unlimited" == strLimitStyle)
     {
         m_limitTimeBox->setEnabled(false);
-        m_limitTimeStartBox->setEnabled(false);
-        m_limitTimeEndBox->setEnabled(false);
+        m_limitTimeStartEdit->setEnabled(false);
+        m_limitTimeEndEdit->setEnabled(false);
     }
     else if("limit_time" == strLimitStyle)
     {
         m_limitTimeBox->setEnabled(true);
-        m_limitTimeStartBox->setEnabled(false);
-        m_limitTimeEndBox->setEnabled(false);
+        m_limitTimeStartEdit->setEnabled(false);
+        m_limitTimeEndEdit->setEnabled(false);
     }
     else if("timer" == strLimitStyle)
     {
         m_limitTimeBox->setEnabled(false);
-        m_limitTimeStartBox->setEnabled(true);
-        m_limitTimeEndBox->setEnabled(true);
+        m_limitTimeStartEdit->setEnabled(true);
+        m_limitTimeEndEdit->setEnabled(true);
     }
 }
 
@@ -410,19 +438,22 @@ void AgentTest::uiBuild()
     m_limitTimeBox = new QSpinBox(this);
 
     //开始时间
-    m_limitTimeStartBox = new QDateTimeEdit(this);
-    m_limitTimeStartBox->setDate(QDate(2024, 12, 1));
-    m_limitTimeStartBox->setTime(QTime(8, 0));
+    m_limitTimeStartEdit = new QDateTimeEdit(this);
+    m_limitTimeStartEdit->setDate(QDate(2024, 12, 1));
+    m_limitTimeStartEdit->setTime(QTime(8, 0));
 
     //结束时间
-    m_limitTimeEndBox = new QDateTimeEdit(this);
-    m_limitTimeEndBox->setDate(QDate(2024, 12, 1));
-    m_limitTimeEndBox->setTime(QTime(8, 0));
+    m_limitTimeEndEdit = new QDateTimeEdit(this);
+    m_limitTimeEndEdit->setDate(QDate(2024, 12, 1));
+    m_limitTimeEndEdit->setTime(QTime(8, 0));
 
     //音量
     m_volumeBox = new QSpinBox(this);
     m_volumeBox->setMaximum(100);
     m_volumeBox->setMinimum(0);
+
+    //直播流地址
+    m_liveAddressEdit = new QLineEdit(this);
 
     //消息优先级
     m_msgPriorityBox = new QSpinBox(this);
@@ -463,17 +494,21 @@ void AgentTest::uiBuild()
     m_widgetVec.push_back(m_textFontSizeEdit);
     m_widgetVec.push_back(m_limitStyleBox);
     m_widgetVec.push_back(m_limitTimeBox);
-    m_widgetVec.push_back(m_limitTimeStartBox);
-    m_widgetVec.push_back(m_limitTimeEndBox);
+    m_widgetVec.push_back(m_limitTimeStartEdit);
+    m_widgetVec.push_back(m_limitTimeEndEdit);
     m_widgetVec.push_back(m_msgPriorityBox);
     m_widgetVec.push_back(m_volumeBox);
+    m_widgetVec.push_back(m_liveAddressEdit);
 
 
     //UI文本
-    QString ui_labelText[13] = {"命令项", "文本内容", "背景颜色", "文本颜色", "滚动方向", "滚动速度",
-                                "字体大小", "时间限制", "显示时长", "开始时间", "结束时间", "优先级", "设置音量"};
+    QString ui_labelText[WIDGET_NUM] = {"命令项", "文本内容", "背景颜色", "文本颜色", "滚动方向", "滚动速度",
+                                "字体大小", "时间限制", "显示时长", "开始时间", "结束时间", "优先级", "设置音量", "直播地址"};
 
-    for(int i = 0; i < 13; i++)
+    if(m_widgetVec.size() < WIDGET_NUM)
+        QMessageBox::warning(this, "Error", "m_widgetVec size is too few");
+
+    for(int i = 0; i < WIDGET_NUM; i++)
     {
         ui_label[i] = new QLabel(this);
         ui_label[i]->setAlignment(Qt::AlignCenter);
@@ -488,7 +523,7 @@ void AgentTest::uiBuild()
 
 
     //水平布局
-    for(int i = 0; i < 13; i++)
+    for(int i = 0; i < WIDGET_NUM; i++)
     {
         m_hBox[i] = new QHBoxLayout;
         m_hBox[i]->addWidget(ui_label[i]);
@@ -496,18 +531,18 @@ void AgentTest::uiBuild()
         m_hBox[i]->addWidget(m_widgetVec[i]);
     }
 
-    m_hBox[13] = new QHBoxLayout;
-    m_hBox[13]->addWidget(m_jsonConvertSZ);
-    m_hBox[13]->addSpacing(8);
-    m_hBox[13]->addWidget(m_buildBtnSZ);
-    m_hBox[13]->addSpacing(8);
-    m_hBox[13]->addWidget(m_buildBtnFZ);
-    m_hBox[13]->addSpacing(8);
-    m_hBox[13]->addWidget(m_udpSendBtn);
+    m_hBtmBox = new QHBoxLayout;
+    m_hBtmBox->addWidget(m_jsonConvertSZ);
+    m_hBtmBox->addSpacing(8);
+    m_hBtmBox->addWidget(m_buildBtnSZ);
+    m_hBtmBox->addSpacing(8);
+    m_hBtmBox->addWidget(m_buildBtnFZ);
+    m_hBtmBox->addSpacing(8);
+    m_hBtmBox->addWidget(m_udpSendBtn);
 
     //垂直布局
     m_vBox = new QVBoxLayout;
-    for(int i = 0; i < 14; i++)
+    for(int i = 0; i < WIDGET_NUM + 1; i++)
     {
         m_vBox->addLayout(m_hBox[i]);
         m_vBox->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));

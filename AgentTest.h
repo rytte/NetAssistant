@@ -13,6 +13,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QVector>
+#include <tuple>
 
 class MainWindow;
 
@@ -42,6 +43,27 @@ private:
     void uiBuild();
 
 private:
+    enum {
+        WIDGET_NUM = 14
+    };
+
+    enum WidgetID{
+        COMMAND = 0,
+        TEXT = 1,
+        BACKGROUND_COLOR = 2,
+        TEXT_COLOR = 3,
+        TEXT_DIRECTION = 4,
+        TEXT_SCROLL_INTERVAL = 5,
+        TEXT_FONT_SIZE = 6,
+        LIMIT_STYLE = 7,
+        LIMIT_TIME = 8,
+        LIMIT_TIME_START = 9,
+        LIMIT_TIME_END = 10,
+        MSG_PRIORITY = 11,
+        VOLUME = 12,
+        LIVE_ADDRESS = 13
+    };
+
     MainWindow* m_myParent;
     QVector<QWidget*> m_widgetVec;
 
@@ -54,14 +76,16 @@ private:
     QLineEdit* m_textFontSizeEdit;
     QComboBox* m_limitStyleBox;
     QSpinBox* m_limitTimeBox;
-    QDateTimeEdit* m_limitTimeStartBox;
-    QDateTimeEdit* m_limitTimeEndBox;
-    QSpinBox* m_volumeBox;
+    QDateTimeEdit* m_limitTimeStartEdit;
+    QDateTimeEdit* m_limitTimeEndEdit;
     QSpinBox* m_msgPriorityBox;
+    QSpinBox* m_volumeBox;
+    QLineEdit* m_liveAddressEdit;
 
     //布局管理器
     QVBoxLayout* m_vBox;
-    QHBoxLayout* m_hBox[14];
+    QHBoxLayout* m_hBox[WIDGET_NUM];
+    QHBoxLayout* m_hBtmBox;
 
     //Json生成按钮
     QPushButton* m_buildBtnSZ;
@@ -70,7 +94,7 @@ private:
     QPushButton* m_udpSendBtn;
 
     //ui
-    QLabel* ui_label[13];
+    QLabel* ui_label[WIDGET_NUM];
 };
 
 #endif // AGENTTEST_H
