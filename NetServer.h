@@ -11,18 +11,12 @@
 #include <QTcpServer>
 #include <QHostAddress>
 
-class MainWindow;
-
 class NetServer : public QWidget
 {
 public:
     NetServer(QWidget *parent = nullptr);
 
-    QString getTcpRecvPort() {return m_TcpRecvEdit->text();}
-    QString getUdpRecvPort() {return m_UdpRecvEdit->text();}
-    void setTcpRecvPort(QString port);
-    void setUdpRecvPort(QString port);
-    void setTcpRecvBufferText(QString data);
+    void setTcpRecvBufferText(QString data) {m_TcpRecvBuffer->append(data);}
 
 public slots:
     void slot_TcpRecvConnBtn();
@@ -35,7 +29,6 @@ private:
     void uiBuild();
 
 private:
-    MainWindow* m_myParent;
 
     //套接字
     QTcpServer* m_TcpServer;
@@ -49,10 +42,6 @@ private:
     //连接按钮
     QPushButton* m_TcpRecvConnBtn;
     QPushButton* m_UdpRecvConnBtn;
-
-    //清除按钮
-    QPushButton* m_TcpClearBufferBtn;
-    QPushButton* m_UdpClearBufferBtn;
 
     //接收缓冲区
     QTextBrowser* m_TcpRecvBuffer;

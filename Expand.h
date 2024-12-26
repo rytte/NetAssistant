@@ -16,12 +16,6 @@ class Expand : public QWidget
 public:
     Expand(QWidget *parent = nullptr);
 
-    QString getBufferText(int bufferIndex) {return m_textEdit[bufferIndex]->toPlainText();}
-    QString getTimerText() {return m_timeEdit->text();};
-    void setBufferText1(QString str) {m_textEdit[0]->setText(str);}
-    void setBufferText2(QString str) {m_textEdit[1]->setText(str);}
-    void setBufferText3(QString str) {m_textEdit[2]->setText(str);}
-    void setTimerText(QString str) {m_timeEdit->setText(str);}
     void stopTimerClose();
 
 public slots:
@@ -47,13 +41,10 @@ private:
     QLabel* m_countDownLabel;
 
     //文件
-    QLineEdit* m_FileEdit;
-    QPushButton* m_FileSelectBtn;
-    QPushButton* m_FileReadBtn;
+    QLineEdit* m_fileEdit;
 
     //备用缓冲区
     QTabWidget* m_tabWidget;
-    QPushButton* m_replaceBufferBtn;
     QTextEdit* m_textEdit[3];
 };
 

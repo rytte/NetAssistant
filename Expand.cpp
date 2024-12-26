@@ -67,12 +67,12 @@ void Expand::slot_ReplaceBufferBtn()
 void Expand::slot_FileSelectBtn()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "选择文件", "./");
-    m_FileEdit->setText(filePath);
+    m_fileEdit->setText(filePath);
 }
 
 void Expand::slot_FileReadBtn()
 {
-    QFile readFile(m_FileEdit->text());
+    QFile readFile(m_fileEdit->text());
     readFile.open(QIODevice::ReadOnly);
     m_myParent->setSendBuffer(QString::fromUtf8(readFile.readAll()));
     readFile.close();
@@ -108,7 +108,7 @@ void Expand::uiBuild()
 
     m_countDownTimer = new QTimer(this);
     connect(m_countDownTimer,&QTimer::timeout,this,[=]()mutable{
-        if(m_secTime>=0)
+        if(m_secTime >=0 )
         {
             m_secTime--;
             m_countDownLabel->setText(QDateTime::fromSecsSinceEpoch(m_secTime, Qt::UTC).toString("hh:mm:ss"));
@@ -116,25 +116,25 @@ void Expand::uiBuild()
     });
 
     //发送文件
-    m_FileEdit = new QLineEdit(this);
-    m_FileEdit->setFixedSize(180, 25);
-    m_FileEdit->setFont(font_s);
+    m_fileEdit = new QLineEdit(this);
+    m_fileEdit->setFixedSize(180, 25);
+    m_fileEdit->setFont(font_s);
 
-    m_FileSelectBtn = new QPushButton("选择文件", this);
-    m_FileSelectBtn->setFixedSize(60, 25);
-    m_FileSelectBtn->setFont(font_s);
-    connect(m_FileSelectBtn, &QPushButton::clicked, this, &Expand::slot_FileSelectBtn);
+    QPushButton* fileSelectBtn = new QPushButton("选择文件", this);
+    fileSelectBtn->setFixedSize(60, 25);
+    fileSelectBtn->setFont(font_s);
+    connect(fileSelectBtn, &QPushButton::clicked, this, &Expand::slot_FileSelectBtn);
 
-    m_FileReadBtn = new QPushButton("读取", this);
-    m_FileReadBtn->setFixedSize(60, 25);
-    m_FileReadBtn->setFont(font_s);
-    connect(m_FileReadBtn, &QPushButton::clicked, this, &Expand::slot_FileReadBtn);
+    QPushButton* fileReadBtn = new QPushButton("读取", this);
+    fileReadBtn->setFixedSize(60, 25);
+    fileReadBtn->setFont(font_s);
+    connect(fileReadBtn, &QPushButton::clicked, this, &Expand::slot_FileReadBtn);
 
     //替换按钮
-    m_replaceBufferBtn = new QPushButton("替换", this);
-    m_replaceBufferBtn->setFixedSize(60, 22);
-    m_replaceBufferBtn->setFont(font_s);
-    connect(m_replaceBufferBtn, &QPushButton::clicked, this, &Expand::slot_ReplaceBufferBtn);
+    QPushButton* replaceBufferBtn = new QPushButton("替换", this);
+    replaceBufferBtn->setFixedSize(60, 22);
+    replaceBufferBtn->setFont(font_s);
+    connect(replaceBufferBtn, &QPushButton::clicked, this, &Expand::slot_ReplaceBufferBtn);
 
     //选项栏
     m_tabWidget = new QTabWidget(this);
@@ -158,9 +158,20 @@ void Expand::uiBuild()
     }
 
     //替换按钮
-    QObject::connect(m_replaceBufferBtn, &QPushButton::clicked, this, &Expand::slot_ReplaceBufferBtn);
-    m_tabWidget->tabBar()->setTabButton(3, QTabBar::LeftSide, m_replaceBufferBtn);   //替换标签
+    QObject::connect(replaceBufferBtn, &QPushButton::clicked, this, &Expand::slot_ReplaceBufferBtn);
+    m_tabWidget->tabBar()->setTabButton(3, QTabBar::LeftSide, replaceBufferBtn);   //替换标签
     m_tabWidget->setTabEnabled(3, false);     //禁用切换
+
+
+    //配置文件
+    m_textEdit[0]->setText(settings.value("编辑区1").toString());
+    m_textEdit[1]->setText(settings.value("编辑区2").toString());
+    m_textEdit[2]->setText(settings.value("编辑区3").toString());
+    m_timeEdit->setText(settings.value("定时器").toString());
+    connect(m_textEdit[0], &QTextEdit::textChanged, this, [&]{settings.setValue("编辑区1", m_textEdit[0]->toPlainText());});
+    connect(m_textEdit[1], &QTextEdit::textChanged, this, [&]{settings.setValue("编辑区2", m_textEdit[1]->toPlainText());});
+    connect(m_textEdit[2], &QTextEdit::textChanged, this, [&]{settings.setValue("编辑区3", m_textEdit[2]->toPlainText());});
+    connect(m_timeEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("定时器", m_timeEdit->text());});
 
 
     //布局管理器
@@ -172,9 +183,9 @@ void Expand::uiBuild()
     hBox1->addWidget(m_countDownLabel);
 
     QHBoxLayout* hBox2 = new QHBoxLayout;
-    hBox2->addWidget(m_FileEdit);
-    hBox2->addWidget(m_FileSelectBtn);
-    hBox2->addWidget(m_FileReadBtn);
+    hBox2->addWidget(m_fileEdit);
+    hBox2->addWidget(fileSelectBtn);
+    hBox2->addWidget(fileReadBtn);
 
     QVBoxLayout* vBox = new QVBoxLayout;
     vBox->addLayout(hBox1);

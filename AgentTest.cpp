@@ -203,7 +203,7 @@ void AgentTest::slot_BuildBtnFZ()
     }
     else if("CHANGE_LIVE" == strCommand)
     {
-        messageBody.insert("live_address", "");
+        messageBody.insert("live_address", m_liveAddressEdit->text());
     }
 
     int randomInt = QRandomGenerator::global()->bounded(900000000) + 100000000;
@@ -462,26 +462,26 @@ void AgentTest::uiBuild()
     m_msgPriorityBox->setValue(6);
 
     //生成按钮SZ
-    m_buildBtnSZ = new QPushButton("生成深圳JSON", this);
-    m_buildBtnSZ->setFont(font_s);
-    connect(m_buildBtnSZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnSZ);
+    QPushButton* buildBtnSZ = new QPushButton("生成深圳JSON", this);
+    buildBtnSZ->setFont(font_s);
+    connect(buildBtnSZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnSZ);
 
     //生成按钮FZ
-    m_buildBtnFZ = new QPushButton("生成福州JSON", this);
-    m_buildBtnFZ->setFont(font_s);
-    connect(m_buildBtnFZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnFZ);
+    QPushButton* buildBtnFZ = new QPushButton("生成福州JSON", this);
+    buildBtnFZ->setFont(font_s);
+    connect(buildBtnFZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnFZ);
 
     //深圳Json转换按钮
-    m_jsonConvertSZ = new QPushButton("转换", this);
-    m_jsonConvertSZ->setFont(font_s);
-    m_jsonConvertSZ->setMaximumSize(70, 40);
-    connect(m_jsonConvertSZ, &QPushButton::clicked, this, &AgentTest::slot_ConvertJsonBtnSZ);
+    QPushButton* jsonConvertSZ = new QPushButton("转换", this);
+    jsonConvertSZ->setFont(font_s);
+    jsonConvertSZ->setMaximumSize(70, 40);
+    connect(jsonConvertSZ, &QPushButton::clicked, this, &AgentTest::slot_ConvertJsonBtnSZ);
 
     //UDP发送按钮
-    m_udpSendBtn = new QPushButton("UDP发送", this);
-    m_udpSendBtn->setFont(font_s);
-    m_udpSendBtn->setMaximumSize(70, 40);
-    connect(m_udpSendBtn, &QPushButton::clicked, m_myParent, &MainWindow::slot_UdpSendBtn);
+    QPushButton* udpSendBtn = new QPushButton("UDP发送", this);
+    udpSendBtn->setFont(font_s);
+    udpSendBtn->setMaximumSize(70, 40);
+    connect(udpSendBtn, &QPushButton::clicked, m_myParent, &MainWindow::slot_UdpSendBtn);
 
 
     //管理
@@ -523,31 +523,33 @@ void AgentTest::uiBuild()
 
 
     //水平布局
+    QHBoxLayout* hBox[WIDGET_NUM];
     for(int i = 0; i < WIDGET_NUM; i++)
     {
-        m_hBox[i] = new QHBoxLayout;
-        m_hBox[i]->addWidget(ui_label[i]);
-        m_hBox[i]->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));
-        m_hBox[i]->addWidget(m_widgetVec[i]);
+        hBox[i] = new QHBoxLayout;
+        hBox[i]->addWidget(ui_label[i]);
+        hBox[i]->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        hBox[i]->addWidget(m_widgetVec[i]);
     }
 
-    m_hBtmBox = new QHBoxLayout;
-    m_hBtmBox->addWidget(m_jsonConvertSZ);
-    m_hBtmBox->addSpacing(8);
-    m_hBtmBox->addWidget(m_buildBtnSZ);
-    m_hBtmBox->addSpacing(8);
-    m_hBtmBox->addWidget(m_buildBtnFZ);
-    m_hBtmBox->addSpacing(8);
-    m_hBtmBox->addWidget(m_udpSendBtn);
+    QHBoxLayout* hBtmBox = new QHBoxLayout;
+    hBtmBox->addWidget(jsonConvertSZ);
+    hBtmBox->addSpacing(8);
+    hBtmBox->addWidget(buildBtnSZ);
+    hBtmBox->addSpacing(8);
+    hBtmBox->addWidget(buildBtnFZ);
+    hBtmBox->addSpacing(8);
+    hBtmBox->addWidget(udpSendBtn);
 
     //垂直布局
-    m_vBox = new QVBoxLayout;
-    for(int i = 0; i < WIDGET_NUM + 1; i++)
+    QVBoxLayout* vBox = new QVBoxLayout;
+    for(int i = 0; i < WIDGET_NUM; i++)
     {
-        m_vBox->addLayout(m_hBox[i]);
-        m_vBox->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        vBox->addLayout(hBox[i]);
+        vBox->addSpacerItem(new QSpacerItem(15, 15, QSizePolicy::Expanding, QSizePolicy::Expanding));
     }
-    setLayout(m_vBox);
+    vBox->addLayout(hBtmBox);
+    setLayout(vBox);
 }
 
 

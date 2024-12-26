@@ -13,7 +13,6 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QVector>
-#include <tuple>
 
 class MainWindow;
 
@@ -81,17 +80,6 @@ private:
     QSpinBox* m_msgPriorityBox;
     QSpinBox* m_volumeBox;
     QLineEdit* m_liveAddressEdit;
-
-    //布局管理器
-    QVBoxLayout* m_vBox;
-    QHBoxLayout* m_hBox[WIDGET_NUM];
-    QHBoxLayout* m_hBtmBox;
-
-    //Json生成按钮
-    QPushButton* m_buildBtnSZ;
-    QPushButton* m_buildBtnFZ;
-    QPushButton* m_jsonConvertSZ;
-    QPushButton* m_udpSendBtn;
 
     //ui
     QLabel* ui_label[WIDGET_NUM];

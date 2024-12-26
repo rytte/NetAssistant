@@ -7,7 +7,6 @@ NetServer::NetServer(QWidget *parent)
     : QWidget(parent)
 {
     setGeometry(0, 15, 340, 495);
-    m_myParent = (MainWindow* )topLevelWidget();
 
     //创建UI界面
     uiBuild();
@@ -22,21 +21,6 @@ NetServer::NetServer(QWidget *parent)
     connect(m_UdpSocket, &QUdpSocket::readyRead, this, &NetServer::slot_RecvUdpData);       //连接读取函数
 }
 
-void NetServer::setTcpRecvPort(QString port)
-{
-    m_TcpRecvEdit->setText(port);
-}
-
-void NetServer::setUdpRecvPort(QString port)
-{
-    m_UdpRecvEdit->setText(port);
-}
-
-void NetServer::setTcpRecvBufferText(QString data)
-{
-    m_TcpRecvBuffer->append(data);
-}
-
 //TCP端口绑定
 void NetServer::slot_TcpRecvConnBtn()
 {
@@ -44,8 +28,6 @@ void NetServer::slot_TcpRecvConnBtn()
     Connect = !Connect;
     if(Connect)
     {
-        m_myParent->updateInitFile();
-
         m_TcpServer->listen(QHostAddress("0.0.0.0"), m_TcpRecvEdit->text().toInt());
 
         m_TcpRecvConnBtn->setText("已连接");
@@ -67,8 +49,6 @@ void NetServer::slot_UdpRecvConnBtn()
     Connect = !Connect;
     if(Connect)
     {
-        m_myParent->updateInitFile();
-
         m_UdpSocket->bind(QHostAddress("0.0.0.0"), m_UdpRecvEdit->text().toInt());
 
         m_UdpRecvConnBtn->setText("已连接");
@@ -150,6 +130,13 @@ void NetServer::uiBuild()
     m_UdpRecvBuffer->setFixedSize(340, 195);
     m_UdpRecvBuffer->setFont(font_s);
     m_UdpRecvBuffer->document()->setMaximumBlockCount(1000);
+
+
+    //配置文件
+    m_TcpRecvEdit->setText(settings.value("TCP接收端口").toString());
+    m_UdpRecvEdit->setText(settings.value("UDP接收端口").toString());
+    connect(m_TcpRecvEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("TCP接收端口", m_TcpRecvEdit->text());});
+    connect(m_UdpRecvEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("UDP接收端口", m_UdpRecvEdit->text());});
 
 
     //布局管理器

@@ -5,6 +5,8 @@ QFont font_s("Microsoft YaHei");
 QFont font_m("Microsoft YaHei");
 QFont font_l("Microsoft YaHei");
 
+QSettings settings("Yuyi", "NetAssistant");
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -24,90 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     //创建套接字
     m_TcpSocket = new QTcpSocket(this);
     m_UdpSocket = new QUdpSocket(this);
-
-    //读取配置文件
-    loadInitFile();
-
-    //ping处理
-    m_process = new QProcess(this);
-    connect(m_process, &QProcess::readyReadStandardOutput, this, &MainWindow::slot_ReadPingOutput);
-}
-
-
-void MainWindow::updateInitFile()
-{
-    QJsonObject fileJson;
-    fileJson.insert("IP地址", m_IPEdit->text());
-    fileJson.insert("TCP端口", m_TcpSendPortEdit->text());
-    fileJson.insert("UDP端口", m_UdpSendPortEdit->text());
-    fileJson.insert("发送间隔", m_SendIntervalEdit->text());
-    fileJson.insert("发送缓冲区", m_SendTextBuffer->toPlainText());
-    fileJson.insert("TCP接收端口", m_NetServer->getTcpRecvPort());
-    fileJson.insert("UDP接收端口", m_NetServer->getUdpRecvPort());
-    fileJson.insert("编辑区1", m_Expand->getBufferText(0));
-    fileJson.insert("编辑区2", m_Expand->getBufferText(1));
-    fileJson.insert("编辑区3", m_Expand->getBufferText(2));
-    fileJson.insert("定时器", m_Expand->getTimerText());
-
-    QFile file("./NetInit.ini");                        //定义无名文件对象
-    file.open(QIODevice::WriteOnly);                    //读写方式打开文件
-    file.write(QString(QJsonDocument(fileJson).toJson()).toUtf8());
-    file.close();
-}
-
-void MainWindow::loadInitFile()
-{
-    QFile file("./NetInit.ini");
-    file.open(QIODevice::ReadOnly);
-
-    QJsonParseError jsonParseError;
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(file.readAll(), &jsonParseError);
-    file.close();
-    QJsonObject jsonObj = jsonDoc.object();
-
-    m_IPEdit->setText(jsonObj.value("IP地址").toString());
-    m_TcpSendPortEdit->setText(jsonObj.value("TCP端口").toString());
-    m_UdpSendPortEdit->setText(jsonObj.value("UDP端口").toString());
-    m_NetServer->setTcpRecvPort(jsonObj.value("TCP接收端口").toString());
-    m_NetServer->setUdpRecvPort(jsonObj.value("UDP接收端口").toString());
-    m_SendIntervalEdit->setText(jsonObj.value("发送间隔").toString());
-    m_SendTextBuffer->setText(jsonObj.value("发送缓冲区").toString());
-    m_Expand->setBufferText1(jsonObj.value("编辑区1").toString());
-    m_Expand->setBufferText2(jsonObj.value("编辑区2").toString());
-    m_Expand->setBufferText3(jsonObj.value("编辑区3").toString());
-    m_Expand->setTimerText(jsonObj.value("定时器").toString());
-}
-
-bool MainWindow::isTimerActive()
-{
-    return m_stopKeepBtn->isEnabled();
-}
-
-void MainWindow::setSendBuffer(QString str)
-{
-    m_SendTextBuffer->setText(str);
-}
-
-QString MainWindow::getSendBuffer()
-{
-    return m_SendTextBuffer->toPlainText();
-}
-
-//ping按钮
-void MainWindow::slot_PingBtn()
-{
-    QString program = "ping";            // ping命令
-    QStringList arguments;
-    arguments << m_IPEdit->text();       // 设置ping的参数
-    m_process->start(program, arguments);
-    updateInitFile();
-}
-
-//ping逐行读取
-void MainWindow::slot_ReadPingOutput()
-{
-    QString output = QString::fromLocal8Bit(m_process->readAllStandardOutput()); // 读取ping的输出
-    m_NetServer->setTcpRecvBufferText(output);
 }
 
 void MainWindow::slot_TcpSendConnBtn()
@@ -153,7 +71,6 @@ void MainWindow::slot_TcpSendBtn()
     }
 
     m_TcpSocket->write(m_SendTextBuffer->toPlainText().toUtf8());
-    updateInitFile();
 }
 
 void MainWindow::slot_UdpSendBtn()
@@ -167,22 +84,6 @@ void MainWindow::slot_UdpSendBtn()
     }
 
     m_address.setAddress(m_IPEdit->text());
-    m_UdpSocket->writeDatagram(m_SendTextBuffer->toPlainText().toUtf8(), m_address, m_UdpSendPortEdit->text().toInt());
-    updateInitFile();
-}
-
-void MainWindow::slot_ClearSendBtn()
-{
-    m_SendTextBuffer->setText("");
-}
-
-void MainWindow::slot_TcpTimerSendMessage()
-{
-    m_TcpSocket->write(m_SendTextBuffer->toPlainText().toUtf8());
-}
-
-void MainWindow::slot_UdpTimerSendMessage()
-{
     m_UdpSocket->writeDatagram(m_SendTextBuffer->toPlainText().toUtf8(), m_address, m_UdpSendPortEdit->text().toInt());
 }
 
@@ -255,10 +156,18 @@ void MainWindow::uiBuild()
     m_IPEdit->setFixedSize(150, 25);
     m_IPEdit->setFont(font_l);
 
-    m_PingBtn = new QPushButton("Ping", this);
-    m_PingBtn->setFixedSize(75, 25);
-    m_PingBtn->setFont(font_s);
-    connect(m_PingBtn, &QPushButton::clicked, this, &MainWindow::slot_PingBtn);
+    //ping处理
+    QProcess *process = new QProcess(this);
+    connect(process, &QProcess::readyReadStandardOutput, this,
+            [&]{
+        QString output = QString::fromLocal8Bit(process->readAllStandardOutput());
+        m_NetServer->setTcpRecvBufferText(output);
+    });
+
+    QPushButton* pingBtn = new QPushButton("Ping", this);
+    pingBtn->setFixedSize(75, 25);
+    pingBtn->setFont(font_s);
+    connect(pingBtn, &QPushButton::clicked, this, [&]{process->start("ping", QStringList(m_IPEdit->text()));});
 
     //TCP端口号
     QLabel* ui_TcpSendPort = new QLabel("TCP端口", this);
@@ -295,9 +204,9 @@ void MainWindow::uiBuild()
     ui_ms->adjustSize();
 
     m_TcpTimer = new QTimer(this);
-    connect(m_TcpTimer, &QTimer::timeout, this, &MainWindow::slot_TcpTimerSendMessage);
+    connect(m_TcpTimer, &QTimer::timeout, this, [this]{m_TcpSocket->write(m_SendTextBuffer->toPlainText().toUtf8());});
     m_UdpTimer = new QTimer(this);
-    connect(m_UdpTimer, &QTimer::timeout, this, &MainWindow::slot_UdpTimerSendMessage);
+    connect(m_UdpTimer, &QTimer::timeout, this, [this]{m_UdpSocket->writeDatagram(m_SendTextBuffer->toPlainText().toUtf8(), m_address, m_UdpSendPortEdit->text().toInt());});
 
     m_stopKeepBtn = new QPushButton("停止发送", this);
     m_stopKeepBtn->setFixedSize(156, 22);
@@ -318,10 +227,10 @@ void MainWindow::uiBuild()
     connect(m_UdpSendBtn, &QPushButton::clicked, this, &MainWindow::slot_UdpSendBtn);
 
     //清空发送缓冲区
-    m_ClearSendBtn = new QPushButton("清空", this);
-    m_ClearSendBtn->setFixedSize(75, 22);
-    m_ClearSendBtn->setFont(font_s);
-    connect(m_ClearSendBtn, &QPushButton::clicked, this, &MainWindow::slot_ClearSendBtn);
+    QPushButton* clearSendBtn = new QPushButton("清空", this);
+    clearSendBtn->setFixedSize(75, 22);
+    clearSendBtn->setFont(font_s);
+    connect(clearSendBtn, &QPushButton::clicked, this, [this]{m_SendTextBuffer->setText("");});
 
     //发送缓冲区
     m_SendTextBuffer = new QTextEdit(this);
@@ -350,13 +259,26 @@ void MainWindow::uiBuild()
     m_AgentTest = new AgentTest(agent);
 
 
+    //配置文件
+    m_IPEdit->setText(settings.value("IP地址").toString());
+    m_TcpSendPortEdit->setText(settings.value("TCP端口").toString());
+    m_UdpSendPortEdit->setText(settings.value("UDP端口").toString());
+    m_SendIntervalEdit->setText(settings.value("发送间隔").toString());
+    m_SendTextBuffer->setPlainText(settings.value("发送缓冲区").toString());
+    connect(m_IPEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("IP地址", m_IPEdit->text());});
+    connect(m_TcpSendPortEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("TCP端口", m_TcpSendPortEdit->text());});
+    connect(m_UdpSendPortEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("UDP端口", m_UdpSendPortEdit->text());});
+    connect(m_SendIntervalEdit, &QLineEdit::textChanged, this, [&]{settings.setValue("发送间隔", m_SendIntervalEdit->text());});
+    connect(m_SendTextBuffer, &QTextEdit::textChanged, this, [&]{settings.setValue("发送缓冲区", m_SendTextBuffer->toPlainText());});
+
+
     //布局管理器
     QWidget* widget = new QWidget(this);
     widget->setFixedSize(340, 530);
     QGridLayout* gridLayout = new QGridLayout;
     gridLayout->addWidget(ui_IP, 0, 0);
     gridLayout->addWidget(m_IPEdit, 0, 1);
-    gridLayout->addWidget(m_PingBtn, 0, 2);
+    gridLayout->addWidget(pingBtn, 0, 2);
     gridLayout->addWidget(ui_TcpSendPort, 1, 0);
     gridLayout->addWidget(m_TcpSendPortEdit, 1, 1);
     gridLayout->addWidget(m_TcpSendConnBtn, 1, 2);
@@ -377,7 +299,7 @@ void MainWindow::uiBuild()
     hBox2->addWidget(ui_ms);
     hBox2->addWidget(m_stopKeepBtn);
     hBox2->addSpacing(10);
-    hBox2->addWidget(m_ClearSendBtn);
+    hBox2->addWidget(clearSendBtn);
 
     QVBoxLayout* vBox = new QVBoxLayout;
     vBox->addLayout(gridLayout);

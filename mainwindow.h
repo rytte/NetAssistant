@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -21,6 +21,7 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QTabWidget>
+#include <QSettings>
 #include "NetServer.h"
 #include "Expand.h"
 #include "AgentTest.h"
@@ -31,6 +32,8 @@ extern QFont font_s;
 extern QFont font_m;
 extern QFont font_l;
 
+//配置文件
+extern QSettings settings;
 
 
 class MainWindow : public QMainWindow
@@ -42,21 +45,14 @@ public:
     ~MainWindow() = default;
 
 public:
-    void updateInitFile();          //更新配置信息
-    void loadInitFile();            //读取配置文件
-    bool isTimerActive();
-    void setSendBuffer(QString str);
-    QString getSendBuffer();
+    bool isTimerActive() {return m_stopKeepBtn->isEnabled();}
+    void setSendBuffer(QString str) {m_SendTextBuffer->setText(str);}
+    QString getSendBuffer() {return m_SendTextBuffer->toPlainText();}
 
 public slots:
-    void slot_PingBtn();
-    void slot_ReadPingOutput();
     void slot_TcpSendConnBtn();
     void slot_TcpSendBtn();
     void slot_UdpSendBtn();
-    void slot_ClearSendBtn();
-    void slot_TcpTimerSendMessage();
-    void slot_UdpTimerSendMessage();
     void slot_StopKeepBtn();
 
 protected:
@@ -76,7 +72,6 @@ private:
     QLineEdit* m_UdpSendPortEdit;
 
     //连接按钮
-    QPushButton* m_PingBtn;
     QPushButton* m_TcpSendConnBtn;
 
     //连续发送
@@ -89,9 +84,6 @@ private:
     //发送按钮
     QPushButton* m_TcpSendBtn;
     QPushButton* m_UdpSendBtn;
-
-    //发送区清空按钮
-    QPushButton* m_ClearSendBtn;
 
     //发送区编辑框
     QTextEdit* m_SendTextBuffer;
@@ -107,12 +99,8 @@ private:
     Expand* m_Expand;
     AgentTest* m_AgentTest;
 
-    //ping
-    QProcess *m_process;
-
     //窗口移动
     bool m_isDragging;
     QPoint m_lastMousePos;
-
 };
 #endif // MAINWINDOW_H
