@@ -53,8 +53,8 @@ void OpenAIClient::slot_postBtn()
     m_textBrowser->append(ask);
     m_textBrowser->append("\n");
 
-    // 限制最大上下文长度：10条
-    while(m_messages.size() >= 10)
+    // 限制最大上下文长度
+    while(m_messages.size() >= 12)
         m_messages.removeAt(1);
 
     qDebug() << "Current context size: " << m_messages.size();
