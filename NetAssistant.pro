@@ -8,17 +8,21 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += component
+
 SOURCES += \
-    AgentTest.cpp \
-    Expand.cpp \
-    NetServer.cpp \
+    component/AgentTest.cpp \
+    component/Expand.cpp \
+    component/NetServer.cpp \
+    component/OpenAIClient.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    AgentTest.h \
-    Expand.h \
-    NetServer.h \
+    component/AgentTest.h \
+    component/Expand.h \
+    component/NetServer.h \
+    component/OpenAIClient.h \
     mainwindow.h
 
 # Default rules for deployment.

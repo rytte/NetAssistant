@@ -24,6 +24,7 @@
 #include <QSettings>
 #include "NetServer.h"
 #include "Expand.h"
+#include "OpenAIClient.h"
 #include "AgentTest.h"
 
 
@@ -97,6 +98,7 @@ private:
     QTabWidget* m_tabWidget;
     NetServer* m_NetServer;
     Expand* m_Expand;
+    OpenAIClient* m_OpenAIClient;
     AgentTest* m_AgentTest;
 
     //窗口移动

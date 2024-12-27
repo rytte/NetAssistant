@@ -16,6 +16,7 @@ AgentTest::AgentTest(QWidget *parent)
 {
     setGeometry(0, 15, 340, 495);
     m_myParent = (MainWindow* )topLevelWidget();
+    setStyleSheet("QWidget { font-family: 'Microsoft YaHei'; font-size: 11px; }");
 
     //创建UI界面
     uiBuild();
@@ -463,23 +464,19 @@ void AgentTest::uiBuild()
 
     //生成按钮SZ
     QPushButton* buildBtnSZ = new QPushButton("生成深圳JSON", this);
-    buildBtnSZ->setFont(font_s);
     connect(buildBtnSZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnSZ);
 
     //生成按钮FZ
     QPushButton* buildBtnFZ = new QPushButton("生成福州JSON", this);
-    buildBtnFZ->setFont(font_s);
     connect(buildBtnFZ, &QPushButton::clicked, this, &AgentTest::slot_BuildBtnFZ);
 
     //深圳Json转换按钮
     QPushButton* jsonConvertSZ = new QPushButton("转换", this);
-    jsonConvertSZ->setFont(font_s);
     jsonConvertSZ->setMaximumSize(70, 40);
     connect(jsonConvertSZ, &QPushButton::clicked, this, &AgentTest::slot_ConvertJsonBtnSZ);
 
     //UDP发送按钮
     QPushButton* udpSendBtn = new QPushButton("UDP发送", this);
-    udpSendBtn->setFont(font_s);
     udpSendBtn->setMaximumSize(70, 40);
     connect(udpSendBtn, &QPushButton::clicked, m_myParent, &MainWindow::slot_UdpSendBtn);
 
@@ -513,12 +510,10 @@ void AgentTest::uiBuild()
         ui_label[i] = new QLabel(this);
         ui_label[i]->setAlignment(Qt::AlignCenter);
         ui_label[i]->setText(ui_labelText[i]);
-        ui_label[i]->setFont(font_s);
 
         //布局设置
         ui_label[i]->setFixedSize(60, 22);
         m_widgetVec[i]->setFixedSize(225, 22);
-        m_widgetVec[i]->setFont(font_s);
     }
 
 

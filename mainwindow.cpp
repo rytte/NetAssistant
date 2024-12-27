@@ -242,13 +242,15 @@ void MainWindow::uiBuild()
     m_tabWidget->setFixedSize(340, 530);
     QWidget* server = new QWidget(this);
     QWidget* expand = new QWidget(this);
+    QWidget* openai = new QWidget(this);
     QWidget* agent = new QWidget(this);
     m_tabWidget->setFont(font_m);
     m_tabWidget->addTab(server, "接收区");
     m_tabWidget->addTab(expand, "扩展");
+    m_tabWidget->addTab(openai, "openai");
     m_tabWidget->addTab(agent, "测试");
     m_tabWidget->setObjectName("tabWidget");
-    m_tabWidget->setStyleSheet("QTabBar::tab { width: 110px; height: 25px;background-color:transparent;color:rgb(120,120,120);}"
+    m_tabWidget->setStyleSheet("QTabBar::tab { width: 85px; height: 25px;background-color:transparent;color:rgb(120,120,120);}"
                        "QTabBar::tab:selected{ color:rgb(75,75,110); border-bottom:2px solid#4b4b6e; }"
                        "QTabBar::tab:hover{ color:rgb(0,0,0); }"
                                "QTabWidget:pane{border:0px; background-color:transparent}");
@@ -256,6 +258,7 @@ void MainWindow::uiBuild()
     //选项卡
     m_NetServer = new NetServer(server);
     m_Expand = new Expand(expand);
+    m_OpenAIClient = new OpenAIClient(openai);
     m_AgentTest = new AgentTest(agent);
 
 
