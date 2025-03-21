@@ -101,6 +101,9 @@ private:
     OpenAIClient* m_OpenAIClient;
     AgentTest* m_AgentTest;
 
+    //ping
+    QProcess *m_process;
+
     //窗口移动
     bool m_isDragging;
     QPoint m_lastMousePos;

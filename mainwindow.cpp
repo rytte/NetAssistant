@@ -157,17 +157,17 @@ void MainWindow::uiBuild()
     m_IPEdit->setFont(font_l);
 
     //ping处理
-    QProcess *process = new QProcess(this);
-    connect(process, &QProcess::readyReadStandardOutput, this,
+    m_process = new QProcess(this);
+    connect(m_process, &QProcess::readyReadStandardOutput, this,
             [&]{
-        QString output = QString::fromLocal8Bit(process->readAllStandardOutput());
+        QString output = QString::fromLocal8Bit(m_process->readAllStandardOutput());
         m_NetServer->setTcpRecvBufferText(output);
     });
 
     QPushButton* pingBtn = new QPushButton("Ping", this);
     pingBtn->setFixedSize(75, 25);
     pingBtn->setFont(font_s);
-    connect(pingBtn, &QPushButton::clicked, this, [&]{process->start("ping", QStringList(m_IPEdit->text()));});
+    connect(pingBtn, &QPushButton::clicked, this, [&]{m_process->start("ping", QStringList(m_IPEdit->text()));});
 
     //TCP端口号
     QLabel* ui_TcpSendPort = new QLabel("TCP端口", this);
